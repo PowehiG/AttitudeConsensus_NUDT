@@ -61,25 +61,18 @@ simStateCompliance = 'UnknownSimState';
 function sys=mdlDerivatives(t,x,u,i)
 
 % 调用参数
-global J;
-Ji = J(i);
+global J delta_J outDisturbance;
+Ji = J(i) + delta_J;
+di = outDisturbance(i);
 
-sys = [];
+% 状态声明
+qi = x(1:3); % 姿态
+wi = x(4:6); % 角速度
 
+% 状态方程
+sys(1:3) = Kinematic(qi,wi);    % 运动学模型
+sys(4:6) = Dynamic(Ji,wi,di,u); % 动力学模型
 % end mdlDerivatives
-
-%
-%=============================================================================
-% mdlUpdate
-% Handle discrete state updates, sample time hits, and major time step
-% requirements.
-%=============================================================================
-%
-function sys=mdlUpdate(t,x,u)
-
-sys = [];
-
-% end mdlUpdate
 
 %
 %=============================================================================
@@ -88,35 +81,9 @@ sys = [];
 %=============================================================================
 %
 function sys=mdlOutputs(t,x,u)
+qi = x(1:3);    % 姿态
+wi = x(4:6);    % 角速度
 
-sys = [];
-
+dq = Kinematic(qi,wi);
+sys = [q;dq];
 % end mdlOutputs
-
-%
-%=============================================================================
-% mdlGetTimeOfNextVarHit
-% Return the time of the next hit for this block.  Note that the result is
-% absolute time.  Note that this function is only used when you specify a
-% variable discrete-time sample time [-2 0] in the sample time array in
-% mdlInitializeSizes.
-%=============================================================================
-%
-function sys=mdlGetTimeOfNextVarHit(t,x,u)
-
-sampleTime = 1;    %  Example, set the next hit to be one second later.
-sys = t + sampleTime;
-
-% end mdlGetTimeOfNextVarHit
-
-%
-%=============================================================================
-% mdlTerminate
-% Perform any end of simulation tasks.
-%=============================================================================
-%
-function sys=mdlTerminate(t,x,u)
-
-sys = [];
-
-% end mdlTerminate

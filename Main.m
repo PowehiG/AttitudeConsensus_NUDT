@@ -2,10 +2,6 @@
 
 clear;
 
-% 单位矩阵
-global I3;
-I3 = eye(3);
-
 % 航天器模型参数
 global J;
 J=[[1.0,0.1,0.1;   0.1,0.1,0.1;  0.1,0.1,0.9],...
@@ -34,6 +30,7 @@ outDisturbance = [];
 
 % 航天器内部参数变化
 delta_J = diag([0.02*sin(t), 0.01*cos(t), 0.02*sin(0.5*t)]);
+
 % 滑模面参数
 global r;
 r = 1;
