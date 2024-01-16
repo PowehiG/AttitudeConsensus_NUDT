@@ -1,29 +1,22 @@
 % Nonlinear disturbance observer
-function [sys,x0,str,ts,simStateCompliance] = NDO(t,x,u,flag)
-switch flag,
-  case 0,
+function [sys,x0,str,ts,simStateCompliance] = NDO(t,x,u,flag,i)
+switch flag
+  case 0
     [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes;
 
-  case 1,
+  case 1
     sys=mdlDerivatives(t,x,u);
 
-  case 2,
-    sys=mdlUpdate(t,x,u);
-
-  case 3,
+  case 3
     sys=mdlOutputs(t,x,u);
 
-  case 4,
-    sys=mdlGetTimeOfNextVarHit(t,x,u);
-
-  case 9,
-    sys=mdlTerminate(t,x,u);
+  case {2,4,9}
+    sys = [];
 
   otherwise
-    DAStudio.error('Simulink:blocks:unhandledFlag', num2str(flag));
+    error(['uhandled flag= ', num2str(flag)]);
 
 end
-
 % end sfuntmpl
 
 %
@@ -34,47 +27,18 @@ end
 %
 function [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes
 
-%
-% call simsizes for a sizes structure, fill it in and convert it to a
-% sizes array.
-%
-% Note that in this example, the values are hard coded.  This is not a
-% recommended practice as the characteristics of the block are typically
-% defined by the S-function parameters.
-%
 sizes = simsizes;
-
 sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 0;
-sizes.NumInputs      = 0;
-sizes.DirFeedthrough = 1;
+sizes.NumOutputs     = 3;
+sizes.NumInputs      = 9;
+sizes.DirFeedthrough = 0;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
-
 sys = simsizes(sizes);
 
-%
-% initialize the initial conditions
-%
-x0  = [];
-
-%
-% str is always an empty matrix
-%
+x0  = [0,0,0];
 str = [];
-
-%
-% initialize the array of sample times
-%
 ts  = [0 0];
-
-% Specify the block simStateCompliance. The allowed values are:
-%    'UnknownSimState', < The default setting; warn and assume DefaultSimState
-%    'DefaultSimState', < Same sim state as a built-in block
-%    'HasNoSimState',   < No sim state
-%    'DisallowSimState' < Error out when saving or restoring the model sim state
-simStateCompliance = 'UnknownSimState';
-
 % end mdlInitializeSizes
 
 %
@@ -85,8 +49,15 @@ simStateCompliance = 'UnknownSimState';
 %
 function sys=mdlDerivatives(t,x,u)
 
-sys = [];
+q = u(1:3); % 姿态
+dq= u(4:6); % 角速度
+tau = u(7:9); %控制输入
 
+
+global r;
+p = r * H(q,dq) * dq;
+tau_rou_hat = x + p;
+sys = -r*(tau + tau_rou_hat-C());
 % end mdlDerivatives
 
 %

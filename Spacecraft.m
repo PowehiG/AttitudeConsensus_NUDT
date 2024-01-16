@@ -43,12 +43,6 @@ sys = simsizes(sizes);
 x0 = initialState(i);
 str = [];
 ts = [0 0];
-% Specify the block simStateCompliance. The allowed values are:
-%    'UnknownSimState', < The default setting; warn and assume DefaultSimState
-%    'DefaultSimState', < Same sim state as a built-in block
-%    'HasNoSimState',   < No sim state
-%    'DisallowSimState' < Error out when saving or restoring the model sim state
-simStateCompliance = 'UnknownSimState';
 % end mdlInitializeSizes
 
 

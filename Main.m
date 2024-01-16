@@ -35,6 +35,10 @@ outDisturbance = [];
 delta_J = diag([0.02*sin(t), 0.01*cos(t), 0.02*sin(0.5*t)]);
 
 % 滑模面参数
+global l;
+l = 1;
+
+% 控制器参数
 global r;
 r = 1;
 
