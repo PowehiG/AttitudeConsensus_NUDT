@@ -26,14 +26,12 @@ global initialState;
 initialState = [ 0.2, -0.2,  0.3, 0, 0, 0;...
                 -0.3,  0.2,  0.1, 0, 0, 0;...
                  0.1, -0.4,  0.2, 0, 0, 0;...
-                -0.2, -0.1,  0.3, 0, 0, 0];
+                 -0.2, ];
 
-% 航天器外部干扰
+% 航天器干扰
 global outDisturbance;
 outDisturbance = [];
 
-% 航天器内部参数变化
-delta_J = diag([0.02*sin(t), 0.01*cos(t), 0.02*sin(0.5*t)]);
 % 滑模面参数
 global r;
 r = 1;
