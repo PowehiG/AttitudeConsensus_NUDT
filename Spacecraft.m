@@ -34,7 +34,7 @@ sizes = simsizes;
 sizes.NumContStates  = 6;   % 包括位姿，角速度
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 6;
-sizes.NumInputs      = 3;
+sizes.NumInputs      = 3;   % 控制器输入
 sizes.DirFeedthrough = 0;
 sizes.NumSampleTimes = 1;   
 
