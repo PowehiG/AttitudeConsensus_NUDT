@@ -9,7 +9,7 @@ switch flag
     sys=mdlDerivatives(t,x,u,i);
 
   case 3
-    sys=mdlOutputs(t,x,u);
+    sys=mdlOutputs(t,x,u,i);
 
   case {2,4,9}
     sys = [];
@@ -51,13 +51,12 @@ ts  = [0 0];
 function sys=mdlDerivatives(t,x,u,i)
 
 % 输入定义
-q = u(1:3); % 姿态
-dq= u(4:6); % 角速度
-tau = u(7:9); %控制输入
-
-global r J delta_J;
+tau = u(1:3); %控制输入
+q = u(4:6); % 姿态
+dq= u(7:9); % 角速度
+global r J;
 Ji = J(i);
-p = r * H(q,dq) * dq;
+p = r * H(Ji,q) * dq;
 tau_rou_hat = x + p;
 sys = -r*(tau + tau_rou_hat-C(Ji,q,dq)*dq) - r*dH(Ji,q,dq)*dq;
 % end mdlDerivatives
@@ -68,10 +67,12 @@ sys = -r*(tau + tau_rou_hat-C(Ji,q,dq)*dq) - r*dH(Ji,q,dq)*dq;
 % Return the block outputs.
 %=============================================================================
 %
-function sys=mdlOutputs(t,x,u)
-q = u(1:3); % 姿态
-dq= u(4:6); % 角速度
-p = r * H(q,dq) * dq;
+function sys=mdlOutputs(t,x,u,i)
+global r J;
+Ji = J(i);
+q = u(4:6); % 姿态
+dq= u(7:9); % 角速度
+p = r * H(Ji,q) * dq;
 tau_rou_hat = x + p;
 sys = tau_rou_hat;
 % end mdlOutputs

@@ -3,4 +3,5 @@
 function y = H(J, q)
 
 invG = InvG(q);
+
 y = invG'*J*invG;

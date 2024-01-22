@@ -7,7 +7,7 @@ function  y = Dynamic(Ji,wi,di,ui)
 % di: 干扰
 % ui: 控制输入
 
-I3 = eye(3,3);
+global I3;
 
 % 初始化输出
 y = zeros(3,1);

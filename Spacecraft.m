@@ -11,7 +11,7 @@ switch flag
     sys=mdlDerivatives(t,x,u,i);
 
   case 3
-    sys=mdlOutputs(t,x,u);
+    sys=mdlOutputs(x);
 
   case {2,4,9}
     sys = [];
@@ -55,9 +55,14 @@ ts = [0 0];
 function sys=mdlDerivatives(t,x,u,i)
 
 % 调用参数
-global J delta_J outDisturbance;
-Ji = J(i) + delta_J;
-di = outDisturbance(i);
+global J;
+% delta_J = diag([0.02*sin(t), 0.01*cos(t), 0.02*sin(0.5*t)]);
+Ji = J(i);
+d = [0.001*[2*sin(0.01*t)+3;3*cos(0.02*t)+4;3*sin(0.01*t)+2];...
+     0.001*[4*sin(0.03*t)+1;cos(0.01*t)+2;2*sin(0.03*t)+3];...
+     0.001*[3*sin(0.01*t)+2;2*sin(0.01*t)+4;4*sin(0.02*t)+1];...
+     0.001*[3*sin(0.01*t)+1;4*sin(0.03*t)+3;cos(0.03*t)+2];];
+di = d(i);
 
 % 状态声明
 qi = x(1:3); % 姿态
@@ -74,10 +79,10 @@ sys(4:6) = Dynamic(Ji,wi,di,u); % 动力学模型
 % Return the block outputs.
 %=============================================================================
 %
-function sys=mdlOutputs(t,x,u)
+function sys=mdlOutputs(x)
 qi = x(1:3);    % 姿态
 wi = x(4:6);    % 角速度
 
-dq = Kinematic(qi,wi);
-sys = [q;dq];
+dqi = Kinematic(qi,wi);
+sys = [qi;dqi];
 % end mdlOutputs

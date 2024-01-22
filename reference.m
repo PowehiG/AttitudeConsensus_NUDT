@@ -50,8 +50,8 @@ simStateCompliance = 'DefaultSimState';
 %=============================================================================
 %
 function sys = mdlOutputs(t,x,u)
-qd = 0.2*[cos(0.2*t);sin(0.2*t);sqrt(3)];
-dqd = 0.2*[-0.2*sin(0.2*t);0.2*cos(0.2*t);0];
+qd = 0.001*[5*cos(0.01*t)+2;-3*sin(0.02*t)+1;-2*cos(0.02*t)+3];
+dqd = 0.001*[-0.005*sin(0.01*t);-0.06*cos(0.02*t);0.04*sin(0.02*t)];
 
 
 sys = [qd;dqd];

@@ -9,7 +9,7 @@ switch flag
     sys=mdlDerivatives(t,x,u,i);
 
   case 3
-    sys=mdlOutputs(t,x,u,i);
+    sys=mdlOutputs(x,u,i);
 
   case {2,4,9}
     sys = [];
@@ -66,16 +66,16 @@ qi = xi(1:3);
 dqi = xi(4:6);
 
 % 分离姿态信息和姿态微分信息
-q = zeros(N,3);
-dq = zeros(N,3);
-for j = 1:N
-    q(j,:) = u(6*j-5:6*j-2);
-    dq(j,:) = u(6*j-2:6*j);
+q = zeros(N-1,3);
+dq = zeros(N-1,3);
+for j = 1:N-1
+    q(j,:) = u(6*j+1:6*j+3);
+    dq(j,:) = u(6*j+4:6*j+6);
 end
 
 % 协同参考轨迹
-qd = a * q + b * q0;
-dqd = a * dq + b *dq0;
+qd = a * q + b * q0';
+dqd = a * dq + b * dq0';
 qdi = qd(i);
 dqdi = dqd(i);
 
@@ -120,16 +120,16 @@ qi = xi(1:3);
 dqi = xi(4:6);
 
 % 分离姿态信息和姿态微分信息
-q = zeros(N,3);
-dq = zeros(N,3);
-for j = 1:N
-    q(j,:) = u(6*j-5:6*j-2);
-    dq(j,:) = u(6*j-2:6*j);
+q = zeros(N-1,3);
+dq = zeros(N-1,3);
+for j = 1:N-1
+    q(j,:) = u(6*j+1:6*j+3);
+    dq(j,:) = u(6*j+4:6*j+6);
 end
 
 % 协同参考轨迹
-qd = a * q + b * q0;
-dqd = a * dq + b *dq0;
+qd = a * q + b*q0';
+dqd = a * dq + b*dq0';
 qdi = qd(i);
 dqdi = dqd(i);
 
@@ -155,7 +155,7 @@ sum_a = sum(a,2);   % a矩阵按行求和
 sum_b = sum(b,2);   % b矩阵按行求和
 tau_i = 0;
 if norm(tau_rou_hat,1) <= delta4
-    tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta1_hat*sign(si));
+    tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta1_hat*sign(si))-tau_rou_hat;
 else
     tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta2_hat*sign(si));
 end
