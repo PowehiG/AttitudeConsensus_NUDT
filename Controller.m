@@ -1,9 +1,9 @@
 % 控制器模块
 
-function [sys,x0,str,ts,simStateCompliance] = Controller(t,x,u,flag,i)
+function [sys,x0,str,ts] = Controller(t,x,u,flag,i)
 switch flag
   case 0
-    [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes(i,inputNum);
+    [sys,x0,str,ts]=mdlInitializeSizes(i);
 
   case 1
     sys=mdlDerivatives(t,x,u,i);
@@ -25,13 +25,13 @@ end
 % Return the sizes, initial conditions, and sample times for the S-function.
 %=============================================================================
 %
-function [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes(i)
-global N;
+function [sys,x0,str,ts]=mdlInitializeSizes(i)
+
 sizes = simsizes;
 sizes.NumContStates  = 3;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 9;
-sizes.NumInputs      = N*6+3;  % 所有航天器状态及NDO输入
+sizes.NumOutputs     = 6;
+sizes.NumInputs      = 5*6+3;  % 所有航天器状态及NDO输入
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 sys = simsizes(sizes);
@@ -90,7 +90,7 @@ si = l*e1i +e2i;
 k_hat_dot = c1*norm(si,2);
 alpha1_hat_dot = c2*norm(si,1);
 alpha2_hat_dot = c3*norm(inv(H(Ji,qi)),1)*norm(si,1);
-sys = [k_hat_dot, alpha1_hat_dot, alpha2_hat_dot];
+sys = [k_hat_dot,alpha1_hat_dot,alpha2_hat_dot];
 % end mdlDerivatives
 
 %
@@ -99,7 +99,7 @@ sys = [k_hat_dot, alpha1_hat_dot, alpha2_hat_dot];
 % Return the block outputs.
 %=============================================================================
 %
-function sys=mdlOutputs(t,x,u,i)
+function sys=mdlOutputs(x,u,i)
 
 % 参数说明
 global N;

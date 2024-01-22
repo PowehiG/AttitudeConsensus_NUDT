@@ -1,11 +1,11 @@
 % Spacecraft 动力学模型
 
-function [sys,x0,str,ts,simStateCompliance] = Spacecraft(t,x,u,flag,i)
+function [sys,x0,str,ts] = Spacecraft(t,x,u,flag,i,initialState)
 % i为航天器编号
 
 switch flag
   case 0
-    [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes(i);
+    [sys,x0,str,ts]=mdlInitializeSizes(i,initialState);
 
   case 1
     sys=mdlDerivatives(t,x,u,i);
@@ -28,7 +28,7 @@ end
 % Return the sizes, initial conditions, and sample times for the S-function.
 %=============================================================================
 %
-function [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes(i)
+function [sys,x0,str,ts]=mdlInitializeSizes(i,initialState)
 
 sizes = simsizes;
 sizes.NumContStates  = 6;   % 包括位姿，角速度
@@ -38,9 +38,9 @@ sizes.NumInputs      = 3;   % 控制器输入
 sizes.DirFeedthrough = 0;
 sizes.NumSampleTimes = 1;   
 
-global initialState;
+
 sys = simsizes(sizes);
-x0 = initialState(i);
+x0 = initialState;
 str = [];
 ts = [0 0];
 % end mdlInitializeSizes

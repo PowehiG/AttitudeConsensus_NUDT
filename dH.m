@@ -4,4 +4,5 @@ function y = dH(J,q,dq)
 
 global I3;
 
-y = 0;
+dinvG = 16*(-2*(dq'*q+q'*dq)*G(q)'/(q+q'*q^3)+1/((1+q'*q)^2)*dG(q,dq)');
+y = dinvG'*J*InvG(q)+InvG(q)'*J*dinvG;
