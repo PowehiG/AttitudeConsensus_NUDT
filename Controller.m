@@ -3,13 +3,13 @@
 function [sys,x0,str,ts,simStateCompliance] = Controller(t,x,u,flag,i)
 switch flag
   case 0
-    [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes(i);
+    [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes(i,inputNum);
 
   case 1
     sys=mdlDerivatives(t,x,u,i);
 
   case 3
-    sys=mdlOutputs(t,x,u);
+    sys=mdlOutputs(t,x,u,i);
 
   case {2,4,9}
     sys = [];
@@ -26,12 +26,13 @@ end
 %=============================================================================
 %
 function [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes(i)
+global N;
 sizes = simsizes;
 sizes.NumContStates  = 3;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 3;
-sizes.NumInputs      = 9;
-sizes.DirFeedthrough = 0;
+sizes.NumOutputs     = 9;
+sizes.NumInputs      = N*6+3;  % 所有航天器状态及NDO输入
+sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 sys = simsizes(sizes);
 x0  = [0,0,0];
@@ -48,21 +49,49 @@ ts  = [0 0];
 function sys=mdlDerivatives(t,x,u,i)
 
 % 参数说明
+global N;
+global J;
+Ji = J(i);
+global l;   % 滑模面常数
+global a b; % 通信矩阵
+global c1 c2 c3 beta0;
 
+% 期望姿态
+q0 = u(1:3);
+dq0 = u(4:6);
+
+% 自身姿态
+xi = u(6*i+1:6*i+6);
+qi = xi(1:3);
+dqi = xi(4:6);
+
+% 分离姿态信息和姿态微分信息
+q = zeros(N,3);
+dq = zeros(N,3);
+for j = 1:N
+    q(j,:) = u(6*j-5:6*j-2);
+    dq(j,:) = u(6*j-2:6*j);
+end
+
+% 协同参考轨迹
+qd = a * q + b * q0;
+dqd = a * dq + b *dq0;
+qdi = qd(i);
+dqdi = dqd(i);
+
+% 协同误差
+e1i = qi - qdi;
+e2i = dqi - dqdi;
+
+% 滑模面
+si = l*e1i +e2i;
+
+% 控制器内部状态更新
+k_hat_dot = c1*norm(si,2);
+alpha1_hat_dot = c2*norm(si,1);
+alpha2_hat_dot = c3*norm(inv(H(Ji,qi)),1)*norm(si,1);
+sys = [k_hat_dot, alpha1_hat_dot, alpha2_hat_dot];
 % end mdlDerivatives
-
-%
-%=============================================================================
-% mdlUpdate
-% Handle discrete state updates, sample time hits, and major time step
-% requirements.
-%=============================================================================
-%
-function sys=mdlUpdate(t,x,u)
-
-sys = [];
-
-% end mdlUpdate
 
 %
 %=============================================================================
@@ -70,36 +99,66 @@ sys = [];
 % Return the block outputs.
 %=============================================================================
 %
-function sys=mdlOutputs(t,x,u)
+function sys=mdlOutputs(t,x,u,i)
 
-sys = [];
+% 参数说明
+global N;
+global J;
+Ji = J(i);
+global l;   % 滑模面常数
+global a b; % 通信矩阵
+global beta0;
+global Delta delta1  delta3 delta4;
 
+% 期望姿态
+q0 = u(1:3);
+dq0 = u(4:6);
+
+% 自身姿态
+xi = u(6*i+1:6*i+6);
+qi = xi(1:3);
+dqi = xi(4:6);
+
+% 分离姿态信息和姿态微分信息
+q = zeros(N,3);
+dq = zeros(N,3);
+for j = 1:N
+    q(j,:) = u(6*j-5:6*j-2);
+    dq(j,:) = u(6*j-2:6*j);
+end
+
+% 协同参考轨迹
+qd = a * q + b * q0;
+dqd = a * dq + b *dq0;
+qdi = qd(i);
+dqdi = dqd(i);
+
+% 协同误差
+e1i = qi - qdi;
+e2i = dqi - dqdi;
+
+% 滑模面
+si = l*e1i +e2i;
+
+% NDO输入
+tau_rou_hat = u(N*6+1:N*6+3);
+
+% 控制器参数计算
+k_hat = x(1);
+alpha1_hat = x(2);
+alpha2_hat = x(3);
+beta1_hat =  alpha1_hat*delta3 + alpha2_hat*Delta*norm(inv(H(Ji,qi)),1) + beta0;
+beta2_hat =  alpha1_hat*delta3 + alpha2_hat*delta1*norm(inv(H(Ji,qi)),1) + beta0;
+
+% 控制输出计算
+sum_a = sum(a,2);   % a矩阵按行求和
+sum_b = sum(b,2);   % b矩阵按行求和
+tau_i = 0;
+if norm(tau_rou_hat,1) <= delta4
+    tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta1_hat*sign(si));
+else
+    tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta2_hat*sign(si));
+end
+sys = [tau_i;si];
 % end mdlOutputs
 
-%
-%=============================================================================
-% mdlGetTimeOfNextVarHit
-% Return the time of the next hit for this block.  Note that the result is
-% absolute time.  Note that this function is only used when you specify a
-% variable discrete-time sample time [-2 0] in the sample time array in
-% mdlInitializeSizes.
-%=============================================================================
-%
-function sys=mdlGetTimeOfNextVarHit(t,x,u)
-
-sampleTime = 1;    %  Example, set the next hit to be one second later.
-sys = t + sampleTime;
-
-% end mdlGetTimeOfNextVarHit
-
-%
-%=============================================================================
-% mdlTerminate
-% Perform any end of simulation tasks.
-%=============================================================================
-%
-function sys=mdlTerminate(t,x,u)
-
-sys = [];
-
-% end mdlTerminate

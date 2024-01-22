@@ -5,7 +5,7 @@ switch flag
     [sys,x0,str,ts,simStateCompliance]=mdlInitializeSizes;
 
   case 1
-    sys=mdlDerivatives(t,x,u);
+    sys=mdlDerivatives(t,x,u,i);
 
   case 3
     sys=mdlOutputs(t,x,u);
@@ -47,31 +47,18 @@ ts  = [0 0];
 % Return the derivatives for the continuous states.
 %=============================================================================
 %
-function sys=mdlDerivatives(t,x,u)
+function sys=mdlDerivatives(t,x,u,i)
 
 q = u(1:3); % 姿态
 dq= u(4:6); % 角速度
 tau = u(7:9); %控制输入
 
-
-global r;
+global r J delta_J;
+Ji = J(i);
 p = r * H(q,dq) * dq;
 tau_rou_hat = x + p;
-sys = -r*(tau + tau_rou_hat-C());
+sys = -r*(tau + tau_rou_hat-C(Ji,q,dq)*dq) - r*dH(Ji,q,dq)*dq;
 % end mdlDerivatives
-
-%
-%=============================================================================
-% mdlUpdate
-% Handle discrete state updates, sample time hits, and major time step
-% requirements.
-%=============================================================================
-%
-function sys=mdlUpdate(t,x,u)
-
-sys = [];
-
-% end mdlUpdate
 
 %
 %=============================================================================
@@ -80,35 +67,9 @@ sys = [];
 %=============================================================================
 %
 function sys=mdlOutputs(t,x,u)
-
-sys = [];
-
+q = u(1:3); % 姿态
+dq= u(4:6); % 角速度
+p = r * H(q,dq) * dq;
+tau_rou_hat = x + p;
+sys = tau_rou_hat;
 % end mdlOutputs
-
-%
-%=============================================================================
-% mdlGetTimeOfNextVarHit
-% Return the time of the next hit for this block.  Note that the result is
-% absolute time.  Note that this function is only used when you specify a
-% variable discrete-time sample time [-2 0] in the sample time array in
-% mdlInitializeSizes.
-%=============================================================================
-%
-function sys=mdlGetTimeOfNextVarHit(t,x,u)
-
-sampleTime = 1;    %  Example, set the next hit to be one second later.
-sys = t + sampleTime;
-
-% end mdlGetTimeOfNextVarHit
-
-%
-%=============================================================================
-% mdlTerminate
-% Perform any end of simulation tasks.
-%=============================================================================
-%
-function sys=mdlTerminate(t,x,u)
-
-sys = [];
-
-% end mdlTerminate

@@ -6,6 +6,10 @@ global I3;
 I3 = eye(3);
 
 % 航天器模型参数
+% 航天器数量
+global N;
+N = 5;  % 包括虚拟leader
+% 航天器转动惯量参数
 global J;
 J=[[1.0,0.1,0.1;   0.1,0.1,0.1;  0.1,0.1,0.9],...
    [1.5,0.2,0.3;   0.2,0.9,0.4;  0.3,0.4,2.0],...
@@ -18,7 +22,7 @@ a = [0.0,1.0,0.0,1.0;...
      1.0,0.0,1.0,0.0;...
      0.0,1.0,0.0,1.0;...
      1.0,0.0,1.0,0.0];
-b = diag([1,0,0,1],0);
+b = diag([1,0,1,0],0);
 
 % 航天器初始状态
 global initialState;
@@ -42,9 +46,19 @@ l = 1;
 global r;
 r = 1;
 
-% 控制律参数
-global beta0, c1, c2, c3;
+% 观测器常数
+global Delta delta1 delta3 delta4;
+Delta = 0.001;
+delta1 = 1;
+delta3 = 1;
+delta4 = 0.1;
 
+% 控制律参数
+global beta0 c1 c2 c3;
+beta0 = 1;
+c1 = 1;
+c2 = 1;
+c3 = 1;
 % % Simulink
 % mdl = 'ADFOFNTSMC5';
 % load_system(mdl);
