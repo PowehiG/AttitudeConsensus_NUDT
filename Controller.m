@@ -127,6 +127,9 @@ for j = 1:N-1
     dq(j,:) = u(6*j+4:6*j+6);
 end
 
+sum_a = sum(a,2);   % a矩阵按行求和
+sum_b = sum(b,2);   % b矩阵按行求和
+
 % 协同参考轨迹
 qd = a * q + b*q0';
 dqd = a * dq + b*dq0';
@@ -134,8 +137,8 @@ qdi = qd(i);
 dqdi = dqd(i);
 
 % 协同误差
-e1i = qi - qdi;
-e2i = dqi - dqdi;
+e1i = (sum_a(i)+sum_b(i))*qi - qdi;
+e2i = (sum_a(i)+sum_b(i))*dqi - dqdi;
 
 % 滑模面
 si = l*e1i +e2i;
@@ -151,8 +154,6 @@ beta1_hat =  alpha1_hat*delta3 + alpha2_hat*Delta*norm(inv(H(Ji,qi)),1) + beta0;
 beta2_hat =  alpha1_hat*delta3 + alpha2_hat*delta1*norm(inv(H(Ji,qi)),1) + beta0;
 
 % 控制输出计算
-sum_a = sum(a,2);   % a矩阵按行求和
-sum_b = sum(b,2);   % b矩阵按行求和
 tau_i = 0;
 if norm(tau_rou_hat,1) <= delta4
     tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta1_hat*sign(si))-tau_rou_hat;
