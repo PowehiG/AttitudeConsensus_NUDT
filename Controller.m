@@ -79,9 +79,12 @@ dqd = a * dq + b * dq0';
 qdi = qd(i);
 dqdi = dqd(i);
 
+sum_a = sum(a,2);   % a矩阵按行求和
+sum_b = sum(b,2);   % b矩阵按行求和
+
 % 协同误差
-e1i = qi - qdi;
-e2i = dqi - dqdi;
+e1i = (sum_a(i)+sum_b(i))*qi - qdi;
+e2i = (sum_a(i)+sum_b(i))*dqi - dqdi;
 
 % 滑模面
 si = l*e1i +e2i;
@@ -108,7 +111,7 @@ Ji = J(i);
 global l;   % 滑模面常数
 global a b; % 通信矩阵
 global beta0;
-global Delta delta1  delta3 delta4;
+global Delta delta1  delta3 delta4 epsilon;
 
 % 期望姿态
 q0 = u(1:3);
@@ -156,7 +159,8 @@ beta2_hat =  alpha1_hat*delta3 + alpha2_hat*delta1*norm(inv(H(Ji,qi)),1) + beta0
 % 控制输出计算
 tau_i = 0;
 if norm(tau_rou_hat,1) <= delta4
-    tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta1_hat*sign(si))-tau_rou_hat;
+    tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta1_hat*Sat(si,epsilon))-tau_rou_hat;
+    tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta1_hat*Sat(si,epsilon))-tau_rou_hat;
 else
     tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta2_hat*sign(si));
 end

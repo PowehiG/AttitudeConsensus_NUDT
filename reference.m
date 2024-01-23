@@ -31,7 +31,7 @@ sizes.NumContStates  = 0;
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 6;  
 sizes.NumInputs      = 0;  
-sizes.DirFeedthrough = 6;   % has direct feedthrough
+sizes.DirFeedthrough = 1;   % has direct feedthrough
 sizes.NumSampleTimes = 1;
 
 sys = simsizes(sizes);
@@ -49,10 +49,9 @@ simStateCompliance = 'DefaultSimState';
 % Return the output vector for the S-function
 %=============================================================================
 %
-function sys = mdlOutputs(t,x,u)
-qd = 0.001*[5*cos(0.01*t)+2;-3*sin(0.02*t)+1;-2*cos(0.02*t)+3];
-dqd = 0.001*[-0.05*sin(0.01*t);-0.06*cos(0.02*t);0.04*sin(0.02*t)];
-
+function sys = mdlOutputs(t)
+qd = 0.001*[5*sin(0.01*t)+2;-3*cos(0.02*t)+1;-2*cos(0.02*t)+3];
+dqd = 0.001*[0.05*cos(0.01*t);0.06*sin(0.02*t);0.04*sin(0.02*t)];
 
 sys = [qd;dqd];
 
