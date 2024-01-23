@@ -90,9 +90,9 @@ e2i = (sum_a(i)+sum_b(i))*dqi - dqdi;
 si = l*e1i +e2i;
 
 % 控制器内部状态更新
-k_hat_dot = c1*norm(si,2);
-alpha1_hat_dot = c2*norm(si,1);
-alpha2_hat_dot = c3*norm(inv(H(Ji,qi)),1)*norm(si,1);
+k_hat_dot = c1*norm(si,2)^2;
+alpha1_hat_dot = c2*norm(si,2);
+alpha2_hat_dot = c3*norm(inv(H(Ji,qi)),2)*norm(si,2);
 sys = [k_hat_dot,alpha1_hat_dot,alpha2_hat_dot];
 % end mdlDerivatives
 
@@ -153,13 +153,12 @@ tau_rou_hat = u(N*6+1:N*6+3);
 k_hat = x(1);
 alpha1_hat = x(2);
 alpha2_hat = x(3);
-beta1_hat =  alpha1_hat*delta3 + alpha2_hat*Delta*norm(inv(H(Ji,qi)),1) + beta0;
-beta2_hat =  alpha1_hat*delta3 + alpha2_hat*delta1*norm(inv(H(Ji,qi)),1) + beta0;
+beta1_hat =  alpha1_hat*delta3 + alpha2_hat*Delta*norm(inv(H(Ji,qi)),2) + beta0;
+beta2_hat =  alpha1_hat*delta3 + alpha2_hat*delta1*norm(inv(H(Ji,qi)),2) + beta0;
 
 % 控制输出计算
 tau_i = 0;
-if norm(tau_rou_hat,1) <= delta4
-    tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta1_hat*Sat(si,epsilon))-tau_rou_hat;
+if norm(tau_rou_hat,2) <= delta4
     tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta1_hat*Sat(si,epsilon))-tau_rou_hat;
 else
     tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta2_hat*sign(si));

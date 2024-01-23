@@ -7,7 +7,7 @@ switch flag
     [sys,x0,str,ts]=mdlInitializeSizes;
 
   case 3
-    sys=mdlOutputs(t,x,u);
+    sys=mdlOutputs(t);
 
   case { 1, 2, 4, 9 }
     sys=[];
