@@ -55,7 +55,7 @@ tau = u(1:3); %控制输入
 q = u(4:6); % 姿态
 dq= u(7:9); % 角速度
 global r J;
-Ji = J(i);
+Ji = cell2mat(J(i));
 p = r * H(Ji,q) * dq;
 tau_rou_hat = x + p;
 sys = -r*(tau + tau_rou_hat-C(Ji,q,dq)*dq) - r*dH(Ji,q,dq)*dq;
@@ -69,7 +69,7 @@ sys = -r*(tau + tau_rou_hat-C(Ji,q,dq)*dq) - r*dH(Ji,q,dq)*dq;
 %
 function sys=mdlOutputs(t,x,u,i)
 global r J;
-Ji = J(i);
+Ji = cell2mat(J(i));
 q = u(4:6); % 姿态
 dq= u(7:9); % 角速度
 p = r * H(Ji,q) * dq;

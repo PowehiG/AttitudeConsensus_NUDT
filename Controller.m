@@ -51,7 +51,7 @@ function sys=mdlDerivatives(t,x,u,i)
 % 参数说明
 global N;
 global J;
-Ji = J(i);
+Ji = cell2mat(J(i));
 global l;   % 滑模面常数
 global a b; % 通信矩阵
 global c1 c2 c3 beta0;
@@ -107,7 +107,7 @@ function sys=mdlOutputs(x,u,i)
 % 参数说明
 global N;
 global J;
-Ji = J(i);
+Ji = cell2mat(J(i));
 global l;   % 滑模面常数
 global a b; % 通信矩阵
 global beta0;
@@ -157,11 +157,11 @@ beta1_hat =  alpha1_hat*delta3 + alpha2_hat*Delta*norm(inv(H(Ji,qi)),2) + beta0;
 beta2_hat =  alpha1_hat*delta3 + alpha2_hat*delta1*norm(inv(H(Ji,qi)),2) + beta0;
 
 % 控制输出计算
-tau_i = 0;
+tau_i = zeros(3,1);
 if norm(tau_rou_hat,2) <= delta4
     tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta1_hat*Sat(si,epsilon))-tau_rou_hat;
 else
-    tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta2_hat*sign(si));
+    tau_i = C(Ji,qi,dqi)*dqi-H(Ji,qi)/(sum_a(i)+sum_b(i))*(l*e2i+k_hat*si+beta2_hat*Sat(si,epsilon));
 end
 sys = [tau_i;si];
 % end mdlOutputs
