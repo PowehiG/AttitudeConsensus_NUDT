@@ -1,4 +1,4 @@
-% G(q)^(-T)函数实现
+% G(q)^(-1)函数实现
 
 function y = InvG(q)
 

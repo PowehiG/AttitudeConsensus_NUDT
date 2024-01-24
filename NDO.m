@@ -58,7 +58,7 @@ global r J;
 Ji = cell2mat(J(i));
 p = r * H(Ji,q) * dq;
 tau_rou_hat = x + p;
-sys = -r*(tau + tau_rou_hat-C(Ji,q,dq)*dq) - r*dH(Ji,q,dq)*dq;
+sys = -r*(tau + tau_rou_hat - C(Ji,q,dq)*dq) - r*dH(Ji,q,dq)*dq;
 % end mdlDerivatives
 
 %
