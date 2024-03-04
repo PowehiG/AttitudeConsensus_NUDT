@@ -1,6 +1,6 @@
 %模块的主要功能是计算控制律U
 
-function [sys,x0,str,ts] = myController(x,u,flag,i)
+function [sys,x0,str,ts] = myController(t,x,u,flag,i)
 
 %初始化参数设计
 switch flag
