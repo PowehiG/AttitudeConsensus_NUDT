@@ -5,6 +5,7 @@ clear;
 global I3;
 I3 = eye(3);
 
+%% 公共参数
 % 航天器模型参数
 % 航天器数量
 global N;
@@ -29,6 +30,7 @@ b = [1;0;1;0];
 global outDisturbance;
 outDisturbance = [];
 
+%% NDTU参数
 % 滑模面参数
 global l;
 l = 0.5;
@@ -51,7 +53,38 @@ c1 = 1;
 c2 = 1;
 c3 = 1;
 epsilon = 1;
-% Simulink
+
+%% Latifu参数
+
+global c k1 k2 r_l alpha epsilon_l;
+epsilon_l = 0.001;
+c = 1;%外滑模面系数
+alpha = 0.6;%外滑模面幂次
+%内滑模面系数
+k1 = 0.2;
+k2 = 0.2;
+r_l = 3/5;%内滑模面系数
+l1 = (2-r_l)*epsilon_l^(r_l-1);
+l2 = (2-r_l)*epsilon_l^(r_l-1);
+
+global rou1 rou2 kappa chi;
+rou1 = 1;
+rou2 = 1;
+kappa = 1;
+chi = 1;
+
+global Kv Keta v E gamma_zeta gamma_thta alpha_1 Omega;
+Kv = 15;
+Keta = 15;
+v = 3/5;
+E = eye(9);
+gamma_thta = 1;
+gamma_zeta = 1;
+alpha_1 = 1;
+Omega = 0.001;
+
+
+%% Simulink
 mdl = 'NUDT';
 load_system(mdl);
 set_param(mdl,'SimulationMode','Normal');

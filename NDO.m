@@ -29,10 +29,10 @@ end
 function [sys,x0,str,ts]=mdlInitializeSizes
 
 sizes = simsizes;
-sizes.NumContStates  = 1;
+sizes.NumContStates  = 3;
 sizes.NumDiscStates  = 0;
-sizes.NumOutputs     = 1;
-sizes.NumInputs      = 30;   % 姿态，姿态微分，控制器输出力矩
+sizes.NumOutputs     = 3;
+sizes.NumInputs      = 9;   % 姿态，姿态微分，控制器输出力矩
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   % at least one sample time is needed
 sys = simsizes(sizes);
