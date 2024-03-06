@@ -1,11 +1,11 @@
 % 模块为分布式自适应
 
-function [sys,x0,str,ts] = DistAdapt(t,x,u,flag,i,initialState)
+function [sys,x0,str,ts] = DistAdapt(t,x,u,flag,i)
 % i为航天器编号
 
 switch flag
     case 0
-        [sys,x0,str,ts]=mdlInitializeSizes(i,initialState);
+        [sys,x0,str,ts]=mdlInitializeSizes;
 
     case 1
         sys=mdlDerivatives(t,x,u,i);
@@ -52,13 +52,13 @@ ts = [0 0];
 % Return the derivatives for the continuous states.
 %=============================================================================
 %
-function sys=mdlDerivatives(x,u,i)
+function sys=mdlDerivatives(t,x,u,i)
 
 % 调用参数
 global b a;
 global c k1 k2 alpha kappa chi;
 
-global J;
+global J N;
 % delta_J = diag([0.02*sin(t), 0.01*cos(t), 0.02*sin(0.5*t)]);
 Ji = cell2mat(J(i));
 % d = {0.001*[2*sin(0.01*t)+3;3*cos(0.02*t)+4;3*sin(0.01*t)+2],...
@@ -75,7 +75,7 @@ dq0 = u(4:6);   % 期望角速度
 % 自身状态
 xi = u(6*i+1:6*i+6);   
 qi = xi(1:3); % 姿态
-wi = xi(4:6); % 角速度
+dqi = xi(4:6); % 角速度
 
 % 其余航天器状态
 % 分离姿态信息和姿态微分信息
@@ -89,20 +89,20 @@ end
 % 微分估计
 ddxi = u(31:36);
 ddqi = ddxi(1:3);
-ddqdi = ddx1(4:6);
+ddqdi = ddxi(4:6);
 
 % 协同参考轨迹
 qd = a * q + b * q0';
 dqd = a * dq + b * dq0';
-qdi = qd(i,:);
-dqdi = dqd(i,:);
+qdi = qd(i,:)';
+dqdi = dqd(i,:)';
 
 sum_a = sum(a,2);   % a矩阵按行求和
 sum_b = sum(b,2);   % b矩阵按行求和
 
 % 协同误差
-etai = (sum_a(i)+sum_b(i))*qi - qdi;
-detai = (sum_a(i)+sum_b(i))*dqi - dqdi;
+etai = ((sum_a(i)+sum_b(i))*qi - qdi)/(sum_a(i)+sum_b(i));
+detai = ((sum_a(i)+sum_b(i))*dqi - dqdi)/(sum_a(i)+sum_b(i));
 ddetai = ddqi - ddqdi;
 
 % 内滑模面

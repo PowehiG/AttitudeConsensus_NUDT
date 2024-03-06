@@ -34,7 +34,7 @@ sizes = simsizes;
 sizes.NumContStates  = 0;   
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 3;
-sizes.NumInputs      = 24;
+sizes.NumInputs      = 30;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   
 
@@ -48,6 +48,8 @@ ts = [0 0];
 
 function sys=mdlOutputs(u,i)
 % 
+global a b;
+global N;
 % 输入说明
 q0 = u(1:3);    % 期望轨迹
 dq0 = u(4:6);   % 期望角速度
@@ -66,8 +68,12 @@ for j = 1:N-1
     q(j,:) = u(6*j+1:6*j+3);
     dq(j,:) = u(6*j+4:6*j+6);
 end
+
+sum_a = sum(a,2);   % a矩阵按行求和
+sum_b = sum(b,2);   % b矩阵按行求和
+
 % 协同参考轨迹
 dqd = a * dq + b * dq0';
-dqdi = dqd(i,:);
+dqdi = dqd(i,:)'/(sum_a(i)+sum_b(i));
 sys = dqdi;
 % end mdlOutputs

@@ -75,8 +75,8 @@ end
 % 协同参考轨迹
 qd = a * q + b * q0';
 dqd = a * dq + b * dq0';
-qdi = qd(i,:);
-dqdi = dqd(i,:);
+qdi = qd(i,:)';
+dqdi = dqd(i,:)';
 
 sum_a = sum(a,2);   % a矩阵按行求和
 sum_b = sum(b,2);   % b矩阵按行求和

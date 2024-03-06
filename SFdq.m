@@ -37,7 +37,7 @@ sizes = simsizes;
 sizes.NumContStates  = 0;   
 sizes.NumDiscStates  = 0;
 sizes.NumOutputs     = 3;
-sizes.NumInputs      = 24;
+sizes.NumInputs      = 30;
 sizes.DirFeedthrough = 1;
 sizes.NumSampleTimes = 1;   
 

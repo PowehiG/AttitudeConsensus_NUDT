@@ -33,7 +33,7 @@ ts = [0 0];
 function sys = mdlDerivatives(u,i)
 global b a;
 global c k1 k2 alpha rou1 rou2;  
-
+global N;
 % 输入说明
 q0 = u(1:3);    % 期望轨迹
 dq0 = u(4:6);   % 期望角速度
@@ -56,7 +56,7 @@ end
 % 微分估计
 ddxi = u(31:36);
 ddqi = ddxi(1:3);
-ddqdi = ddx1(4:6);
+ddqdi = ddxi(4:6);
 
 % 
 gamma_hati = u(37);
@@ -64,15 +64,15 @@ gamma_hati = u(37);
 % 协同参考轨迹
 qd = a * q + b * q0';
 dqd = a * dq + b * dq0';
-qdi = qd(i,:);
-dqdi = dqd(i,:);
+qdi = qd(i,:)';
+dqdi = dqd(i,:)';
 
 sum_a = sum(a,2);   % a矩阵按行求和
 sum_b = sum(b,2);   % b矩阵按行求和
 
 % 协同误差
-etai = (sum_a(i)+sum_b(i))*qi - qdi;
-detai = (sum_a(i)+sum_b(i))*dqi - dqdi;
+etai = ((sum_a(i)+sum_b(i))*qi - qdi)/(sum_a(i)+sum_b(i));
+detai = ((sum_a(i)+sum_b(i))*dqi - dqdi)/(sum_a(i)+sum_b(i));
 ddetai = ddqi - ddqdi;
 
 % 内滑模面
@@ -116,21 +116,21 @@ end
 % 微分估计
 ddxi = u(31:36);
 ddqi = ddxi(1:3);
-ddqdi = ddx1(4:6);
+ddqdi = ddxi(4:6);
 
 
 % 协同参考轨迹
 qd = a * q + b * q0';
 dqd = a * dq + b * dq0';
-qdi = qd(i,:);
-dqdi = dqd(i,:);
+qdi = qd(i,:)';
+dqdi = dqd(i,:)';
 
 sum_a = sum(a,2);   % a矩阵按行求和
-sum_b = sum(b,2);   % b矩阵按行求和
+sum_b = b;   % b矩阵按行求和
 
 % 协同误差
-etai = (sum_a(i)+sum_b(i))*qi - qdi;
-detai = (sum_a(i)+sum_b(i))*dqi - dqdi;
+etai = ((sum_a(i)+sum_b(i))*qi - qdi)/(sum_a(i)+sum_b(i));
+detai = ((sum_a(i)+sum_b(i))*dqi - dqdi)/(sum_a(i)+sum_b(i));
 ddetai = ddqi - ddqdi;
 
 % 内滑模面
@@ -138,6 +138,7 @@ sigmai = detai + k1*etai + k2*Lamda(etai);
 dsigmai = ddetai + k1*detai + k2*Dlamda(etai,detai);
 % 外层滑模面
 si = dsigmai + c*Sig(sigmai,alpha);
+
 Gi = G(qi);
 Hi = H(Ji,qi);
 Ci = C(Ji,qi,dqi);
