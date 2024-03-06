@@ -54,7 +54,7 @@ function sys=mdlOutputs(u,i)
 % 状态信息
 % 自身状态
 xi = u(6*i+1:6*i+6);   
-qi = xi(1:3); % 姿态
+dqi = xi(4:6); % 姿态
 
-sys = qi;
+sys = dqi;
 % end mdlOutputs
