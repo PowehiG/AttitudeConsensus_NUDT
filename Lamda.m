@@ -27,3 +27,11 @@ else
 end
 
 end
+
+% if abs(ei) >epsilon_l 
+%     y = Sig(ei,r_l);
+% else
+%     y = l1*ei + l2*Sig(ei,2);
+% end
+% 
+% end

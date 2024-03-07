@@ -82,7 +82,8 @@ dsigmai = ddetai + k1*detai + k2*Dlamda(etai,detai);
 si = dsigmai + c*Sig(sigmai,alpha);
 
 % 计算绝对姿态误差状态
-sys = -rou1*si -rou2*sign(si)- gamma_hati*sign(si);
+%sys = -rou1*si -rou2*sign(si)- gamma_hati*sign(si);
+sys = -rou1*si - gamma_hati*sign(si);
 
 
 %控制器输出方程
@@ -139,15 +140,13 @@ dsigmai = ddetai + k1*detai + k2*Dlamda(etai,detai);
 % 外层滑模面
 si = dsigmai + c*Sig(sigmai,alpha);
 
-Gi = G(qi);
 Hi = H(Ji,qi);
 Ci = C(Ji,qi,dqi);
-Mi = Gi*inv(Ji);
 
 ueqi = inv(Hi)*Ci*dqi + (ddqdi-k1*detai-k2*Dlamda(etai,detai)-c*Sig(sigmai,alpha));
+
 uni = x;
 
-% uout = G1'*(ueq1+un1);
-uout = inv(Mi)*(ueqi+uni);
+uout = Ji*InvG(qi)*(ueqi+uni);
 
 sys = [uout;si;sigmai];

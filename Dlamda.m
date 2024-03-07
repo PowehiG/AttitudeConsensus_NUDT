@@ -20,10 +20,17 @@ else
     y(2) = l1*dei(2) + 2*l2*abs(ei(2)).*dei(2);
 end
 
-if abs(ei(3)) >epsilon_l
+if abs(ei(3)) >epsilon_l 
     y(3) = r_l*abs(ei(3)).^(r_l-1).*dei(3);
 else 
     y(3) = l1*dei(3) + 2*l2*abs(ei(3)).*dei(3);
 end
 
 end
+% if abs(ei) >epsilon_l 
+%     y = r_l*Sig(ei,r_l-1).*dei;
+% else
+%     y = l1*dei + 2*l2*ei.*abs(ei).*dei;
+% end
+% 
+% end

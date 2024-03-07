@@ -59,22 +59,22 @@ c2 = 1;
 c3 = 1;
 epsilon = 1;
 
-%% Latifu参数
+%% BIT参数
 
 global c k1 k2 r_l alpha epsilon_l l1 l2;
 epsilon_l = 0.001;
 c = 1;%外滑模面系数
 alpha = 0.6;%外滑模面幂次
 %内滑模面系数
-k1 = 0.2;
-k2 = 0.2;
+k1 = 0.8;
+k2 = 0.1;
 r_l = 3/5;%内滑模面系数
 l1 = (2-r_l)*epsilon_l^(r_l-1);
-l2 = (2-r_l)*epsilon_l^(r_l-1);
+l2 = (r_l-1)*epsilon_l^(r_l-2);
 
 global rou1 rou2 kappa chi;
-rou1 = 1;
-rou2 = 1;
+rou1 = 2;
+rou2 = 2;
 kappa = 1;
 chi = 1;
 
@@ -96,37 +96,47 @@ set_param(mdl,'SimulationMode','Normal');
 cs = getActiveConfigSet(mdl);
 mdl_cs = cs.copy;
 set_param(mdl_cs,...
-    'Solver','ode5',...
+    'Solver','ode4',...
     'FixedStep','0.01',...                             
-    'StopTime','50',...
+    'StopTime','30',...
     'SaveTime','off',...
     'SaveState','off',...
     'SaveOutput','off');
 tic;
 simOut = sim(mdl, mdl_cs);
 
-% 输出传递
-% Time = simOut.get('Time');
-% State = simOut.get('State');
-% %Error = simOut.get('Error');
-% CtlCmd = simOut.get('CtlCmd');
-% SM = simOut.get('SM');
-% Sigma = simOut.get('Sigma');
-% Est = simOut.get('Est');
-% PI1_1 = simOut.get('ATEM');
-% PI2_1 = simOut.get('ASEM');
+%% 输出传递
+% 公共输出
+Time = simOut.get('Time');
+% NUDT输出数据
+N_State = simOut.get('State');
+N_Error = simOut.get('StateError');
+N_SMC  = simOut.get('SMC');
+N_Control = simOut.get('ControllerOutput');
+N_EstError = simOut.get('EstimateError');
+%PI1_1 = simOut.get('ATEM');
+%PI2_1 = simOut.get('ASEM');
+
+% BIT输出数据
+B_State = simOut.get('LState');
+B_Error = simOut.get('LStateError');
+B_outerSMC = simOut.get('outerSMC');
+B_innerSMC = simOut.get('innerSMC');
+B_ControlCmd = simOut.get('LControllerOutput');
+%B_EstError = simOut.get('LEstimateError');
+
 elapstime = toc;
 
-% %是否作图询问
-% 
-% ans1 = input('Do you want to draw the results obtained just now? [Y: 1 / N: 2]: ');
-% if isempty(ans1)
-%     disp('Wrong input!');
-% elseif ans1 ==1
-%         run('E:\BaiduNetdiskDownload\Latifu Research\Adaptive Work Chapter 4\DAFOSMC\Plot_ADFOFNTSMS\MainPlot');
-% elseif ans1 == 2
-%         disp('End!');
-% else
-%     disp('Wrong input!');
-% end
+%是否作图询问
+
+ans1 = input('Do you want to draw the results obtained just now? [Y: 1 / N: 2]: ');
+if isempty(ans1)
+    disp('Wrong input!');
+elseif ans1 ==1
+        run('E:\ResearchCode\NUDT\Plot\MainPlot');
+elseif ans1 == 2
+        disp('End!');
+else
+    disp('Wrong input!');
+end
 
