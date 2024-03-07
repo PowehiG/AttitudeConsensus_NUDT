@@ -1,6 +1,6 @@
 % Control torque for each spacecraft
 close all
-DataState = outerSMC;
+DataState = B_outerSMC;
 %-x-axis plot
 x = [];
 i = 1;
