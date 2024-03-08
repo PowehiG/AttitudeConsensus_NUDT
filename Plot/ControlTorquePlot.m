@@ -8,7 +8,7 @@ N_DataState = N_ControlCmd;
 B_x = [];
 i = 1;
 % cla = {'--r', 'g','b','-.magenta','cyan','-.k'}; 
-figure('Name','2','Position',[488/3   342/3   560*1.5   420*1.5])
+figure('Name','Ours:ControlTorque','Position',[488/3   342/3   560*1.5   420*1.5])
 
 cla = {'--r', 'g','b','-.k'}; 
 for j=1:3:size(B_DataState,2)
@@ -31,7 +31,7 @@ for i=1:4
     hold on
 end
 hold on
-axis([4 8 -0.5 0.5]);
+axis([4 8 -0.6 0.3]);
 set(gca,'FontSize',11)
 
 % y axis plot
@@ -56,7 +56,7 @@ for i=1:4
     hold on
 end
 hold on
-axis([4 8 -0.35 0.35]);
+axis([4 8 -0.5 0.25]);
 set(gca,'FontSize',11)
 
 % z axis plot
@@ -84,7 +84,7 @@ for i=1:4
     hold on
 end
 hold on
-axis([4 8 -0.5 0.5]);
+axis([4 8 -0.5 0.25]);
 set(gca,'FontSize',11)
 
 pos1 = get(sub1, 'Position'); % gives the position of current sub-plot
@@ -102,7 +102,7 @@ set(sub3, 'Position',new_pos3 )
 N_x = [];
 i = 1;
 % cla = {'--r', 'g','b','-.magenta','cyan','-.k'}; 
-figure('Name','1','Position',[488/3   342/3   560*1.5   420*1.5])
+figure('Name','NUDTs:ControlTorque','Position',[488/3   342/3   560*1.5   420*1.5])
 
 cla = {'--r', 'g','b','-.k'}; 
 for j=1:3:size(N_DataState,2)
@@ -117,7 +117,7 @@ end
 % plot(Time,x,cla)
 ylabel('$\bf u_{i,1}$','interpreter','latex');
 % xlim([0 5]);
-ylim([-60 20]);
+ylim([-20 20]);
 set(gca,'FontSize',12)
 axes('position', [0.35 0.76 0.4 0.15]);
 for i=1:4
@@ -125,7 +125,7 @@ for i=1:4
     hold on
 end
 hold on
-axis([4 8 -0.5 0.5]);
+axis([4 8 -0.2 0.6]);
 set(gca,'FontSize',11)
 
 % y axis plot
@@ -142,7 +142,7 @@ for i=1:4
 end
 ylabel('$\bf u_{i,2}$','interpreter','latex');
 % xlim([0 5]);
-ylim([-60 20]);
+ylim([-20 20]);
 set(gca,'FontSize',12)
 axes('position', [0.35 0.46 0.4 0.15]);
 for i=1:4
@@ -150,7 +150,7 @@ for i=1:4
     hold on
 end
 hold on
-axis([4 8 -0.35 0.35]);
+axis([4 8 -0.25 0.6]);
 set(gca,'FontSize',11)
 
 % z axis plot
@@ -169,7 +169,7 @@ end
 ylabel('$\bf u_{i,3}$','interpreter','latex');
 legend('i=1','i=2','i=3','i=4','Location','eastoutside','Orientation','vertical');
 % xlim([0 5]);
-ylim([-60 20]);
+ylim([-20 20]);
 xlabel('$\bf Time(s)$','interpreter','latex');
 set(gca,'FontSize',12)
 axes('position', [0.35 0.16 0.4 0.15]);
@@ -178,7 +178,7 @@ for i=1:4
     hold on
 end
 hold on
-axis([4 8 -0.5 0.5]);
+axis([4 8 -0.2 0.7]);
 set(gca,'FontSize',11)
 
 pos1 = get(sub1, 'Position'); % gives the position of current sub-plot

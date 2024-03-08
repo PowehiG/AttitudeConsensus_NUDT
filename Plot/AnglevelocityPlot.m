@@ -5,7 +5,7 @@ N_DataState = N_State.Data;
 
 
 %% BIT
-figure(1)
+figure('Name','Ours:AttitudeVelocity')
 %-x-axis plot
 B_x = [];
 i = 1;
@@ -23,7 +23,7 @@ end
 % plot(Time,x,cla)
 ylabel('$\bf \dot{q}_i^{(1)}$','interpreter','latex');
 %xlim([0 5]);
-ylim([-0.1 0.1]);
+ylim([-0.15 0.1]);
 % legend('spacecraft1','spacecraft2','spacecraft3','spacecraft4','spacecraft6');
 legend('spa.0','spa.1','spa.2','spa.3','spa.4','Location','northoutside','Orientation','horizontal');
 
@@ -41,7 +41,7 @@ for i=1:5
 end
 ylabel('$\bf \dot{q}_i^{(2)}$','interpreter','latex');
 %xlim([0 5]);
-ylim([-0.1 0.1]);
+ylim([-0.15 0.1]);
 
 % z axis plot
 B_z = [];
@@ -62,7 +62,7 @@ ylim([-0.1 0.1]);
 xlabel('$\bf Time(s)$','interpreter','latex');
 
 %% NUDT
-figure(2)
+figure('Name','NUDTs:AttitudeVelocity')
 % x axis plot 
 N_x = [];
 i = 1;

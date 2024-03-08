@@ -4,7 +4,7 @@ B_DataState = B_outerSMC;
 N_DataState = N_SMC;
 
 %% BIT
-figure(1)
+figure('Name','Ours:outerSMC')
 %-x-axis plot
 B_x = [];
 i = 1;
@@ -60,7 +60,7 @@ ylabel('$\bf s_i^{(3)}$','interpreter','latex');
 xlabel('$\bf Time(s)$','interpreter','latex');
 
 %% NUDT
-figure(2)
+figure('Name','NUDTs:innerSMC')
 %-x-axis plot
 N_x = [];
 i = 1;

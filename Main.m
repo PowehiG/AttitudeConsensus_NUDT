@@ -17,11 +17,6 @@ J={[25.1,0.1,-0.1;   0.1,24.8,0.2;  -0.1,0.2,25],...
    [25.3,-0.2,0.3;   -0.2,25.8,0.2;  0.3,0.2,24.9],...
    [24.3,0.2,0.2;    0.2,25.5,-0.1;  0.2,-0.1,25.1]};
 
-% J={[1.0,0.1,0.1;   0.1,0.1,0.1;  0.1,0.1,0.9],...
-%    [1.5,0.2,0.3;   0.2,0.9,0.4;  0.3,0.4,2.0],...
-%    [0.8,0.1,0.2;   0.1,0.7,0.3;  0.2,0.3,1.1],...
-%    [1.2,0.3,0.7;   0.3,0.9,0.2;  0.7,0.2,1.4]};
-
 % 航天器通信拓扑
 global a b;
 a = [0, 1, 0, 1;...
@@ -108,14 +103,15 @@ simOut = sim(mdl, mdl_cs);
 %% 输出传递
 % 公共输出
 Time = simOut.get('Time');
+
 % NUDT输出数据
 N_State = simOut.get('State');
 N_Error = simOut.get('StateError');
 N_SMC  = simOut.get('SMC');
 N_ControlCmd = simOut.get('ControllerOutput');
 N_EstError = simOut.get('EstimateError');
-%PI1_1 = simOut.get('ATEM');
-%PI2_1 = simOut.get('ASEM');
+N_PI1 = simOut.get('PI1');
+N_PI2 = simOut.get('PI2');
 
 % BIT输出数据
 B_State = simOut.get('LState');
@@ -123,18 +119,20 @@ B_Error = simOut.get('LStateError');
 B_outerSMC = simOut.get('outerSMC');
 B_innerSMC = simOut.get('innerSMC');
 B_ControlCmd = simOut.get('LControllerOutput');
-%B_EstError = simOut.get('LEstimateError');
+B_PI1 = simOut.get('LPI1');
+B_PI2 = simOut.get('LPI2');
+B_Est= simOut.get('Estimate');
 
 elapstime = toc;
 
 %是否作图询问
 
-ans1 = input('Do you want to draw the results obtained just now? [Y: 1 / N: 2]: ');
+ans1 = input('Do you want to draw the results obtained just now? y/n:','s');
 if isempty(ans1)
     disp('Wrong input!');
-elseif ans1 ==1
+elseif ans1 =='y'
         run('E:\ResearchCode\NUDT\Plot\MainPlot');
-elseif ans1 == 2
+elseif ans1 == 'n'
         disp('End!');
 else
     disp('Wrong input!');

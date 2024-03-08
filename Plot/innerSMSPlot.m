@@ -10,6 +10,7 @@ for j=1:3:size(DataState,2)
     x = [x,DataState(:,j)];
     i = i+1;
 end
+figure('Name','Ours:innerSMC')
 subplot(3,1,1);
 for i=1:4
     plot(Time,x(:,i),cla{i},'LineWidth',1.8)

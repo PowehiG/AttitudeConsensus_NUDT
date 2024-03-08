@@ -4,7 +4,7 @@ B_DataState = B_State.Data;
 N_DataState = N_State.Data;
 
 %% BIT
-figure(1)
+figure('Name','Ours:Attitude')
 %-x-axis plot
 B_x = [];
 i = 1;
@@ -22,7 +22,7 @@ end
 % plot(Time,x,cla)
 ylabel('$\bf q_i^{(1)}$','interpreter','latex');
 % xlim([0 5]);
-ylim([-0.4 0.4]);
+ylim([-0.2 0.2]);
 % legend('spacecraft1','spacecraft2','spacecraft3','spacecraft4','spacecraft6');
 
 % y axis plot
@@ -61,7 +61,7 @@ ylabel('$\bf q_i^{(3)}$','interpreter','latex');
 xlabel('$\bf Time(s)$','interpreter','latex');
 
 %% NUDT
-figure(2)
+figure('Name','NUDTs:Attitude')
 % x axis plot
 N_x = [];
 i = 1;
@@ -77,7 +77,7 @@ end
 % plot(Time,x,cla)
 ylabel('$\bf q_i^{(1)}$','interpreter','latex');
 % xlim([0 5]);
-ylim([-0.4 0.4]);
+ylim([-0.2 0.2]);
 % legend('spacecraft1','spacecraft2','spacecraft3','spacecraft4','spacecraft6');
 
 % y axis plot

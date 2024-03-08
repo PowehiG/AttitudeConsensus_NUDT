@@ -1,6 +1,6 @@
 
 while true
-    choice = input('Enter choice 1:Attitude, 2:Attitude_dot, 3:Control: 4:InnerSMS, 5:OuterSMS:');
+    choice = input('Enter choice 1:Attitude, 2:Attitude_dot, \n 3:Control, 4:InnerSMS, 5:OuterSMS, 6: PIcompare :');
     switch choice
         case 1
             AttitudePlot;
@@ -12,6 +12,8 @@ while true
             innerSMSPlot;
         case 5
             FOSMSPlot;
+        case 6
+            compare;
         otherwise
             break;
     end
